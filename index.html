@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BrainCraft Academy</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #1a237e 0%, #3949ab 50%, #0d47a1 100%);
+            min-height: 100vh;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(120, 188, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(120, 188, 255, 0.1) 0%, transparent 50%),
+                linear-gradient(90deg, transparent 0%, rgba(66, 165, 245, 0.05) 50%, transparent 100%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #42a5f5, #1976d2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+        }
+
+        .nav-links a:hover {
+            background: linear-gradient(45deg, #42a5f5, #1976d2);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(66, 165, 245, 0.3);
+        }
+
+        .nav-links a.active {
+            background: linear-gradient(45deg, #42a5f5, #1976d2);
+            color: white;
+            box-shadow: 0 8px 25px rgba(66, 165, 245, 0.3);
+        }
+
+        /* Main Content */
+        main {
+            margin-top: 80px;
+            padding: 2rem 0;
+        }
+
+        .page {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            margin: 2rem 0;
+            padding: 3rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero {
+            text-align: center;
+            padding: 4rem 0;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #42a5f5, #1976d2, #0d47a1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+            text-shadow: 0 0 30px rgba(66, 165, 245, 0.3);
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            color: #666;
+            margin-bottom: 2rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(45deg, #42a5f5, #1976d2);
+            color: white;
+            padding: 1rem 2rem;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(66, 165, 245, 0.4);
+            border: 2px solid rgba(66, 165, 245, 0.3);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(66, 165, 245, 0.6);
+            border-color: rgba(66, 165, 245, 0.5);
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 4rem 0;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .video-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .video-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .video-thumbnail {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .video-thumbnail:hover {
+            background: linear-gradient(45deg, #764ba2, #667eea);
+        }
+
+        .video-info {
+            padding: 1.5rem;
+        }
+
+        .video-info h3 {
+            color: #333;
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .video-info p {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .video-link {
+            color: #42a5f5;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .video-link:hover {
+            color: #1976d2;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: #333;
+            font-weight: 700;
+        }
+
+        .content-section {
+            margin: 3rem 0;
+        }
+
+        .content-section h2 {
+            color: #333;
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+            border-bottom: 3px solid #42a5f5;
+            padding-bottom: 0.5rem;
+            display: inline-block;
+        }
+
+        .content-section p {
+            color: #666;
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(45deg, #42a5f5, #1976d2);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(66, 165, 245, 0.4);
+            border: 1px solid rgba(66, 165, 245, 0.3);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        /* OnShape Page Special Styling */
+        #onshape {
+            background: linear-gradient(135deg, #2e7d32 0%, #4caf50 50%, #66bb6a 100%);
+            color: white;
+        }
+
+        #onshape .section-title {
+            color: white;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        #onshape p {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        #onshape .video-card {
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid rgba(76, 175, 80, 0.3);
+        }
+
+        #onshape .video-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+            border-color: rgba(76, 175, 80, 0.6);
+        }
+
+        #onshape .video-thumbnail {
+            background: linear-gradient(45deg, #4caf50, #2e7d32);
+        }
+
+        #onshape .video-thumbnail:hover {
+            background: linear-gradient(45deg, #66bb6a, #4caf50);
+        }
+
+        #onshape .video-link {
+            color: #2e7d32;
+        }
+
+        #onshape .video-link:hover {
+            color: #1b5e20;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .page {
+                padding: 2rem;
+                margin: 1rem;
+            }
+
+            .video-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">BrainCraft Academy</div>
+                <ul class="nav-links">
+                    <li><a href="#home" class="nav-link active">Home</a></li>
+                    <li><a href="#about" class="nav-link">About</a></li>
+                    <li><a href="#onshape" class="nav-link">OnShape Series</a></li>
+                    <li><a href="#tutorials" class="nav-link">All Tutorials</a></li>
+                    <li><a href="#contact" class="nav-link">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Home Page -->
+        <div id="home" class="page active">
+            <div class="hero">
+                <h1>Welcome to BrainCraft Academy</h1>
+                <p>Master CAD Design, Explore STEM, and Unlock Your Potential</p>
+                <a href="#about" class="cta-button">Start Learning Today</a>
+            </div>
+
+            <div class="features">
+                <div class="feature-card">
+                    <div class="feature-icon">🔧</div>
+                    <h3>OnShape Mastery</h3>
+                    <p>Comprehensive tutorials to transform you from beginner to expert CAD designer with hands-on projects and real-world applications.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🧬</div>
+                    <h3>STEM Education</h3>
+                    <p>Deep dive into premed topics including anatomy, diseases, and biological systems with clear, engaging explanations.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💻</div>
+                    <h3>Computer Science</h3>
+                    <p>Build your programming foundation with beginner-friendly lessons in algorithms, data structures, and problem-solving.</p>
+                </div>
+            </div>
+
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-number">50+</div>
+                    <div class="stat-label">Tutorial Videos</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">1000+</div>
+                    <div class="stat-label">Students Helped</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">3</div>
+                    <div class="stat-label">Subject Areas</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">Learning Access</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- About Page -->
+        <div id="about" class="page">
+            <h1 class="section-title">About BrainCraft Academy</h1>
+            
+            <div class="content-section">
+                <h2>Our Mission</h2>
+                <p>BrainCraft Academy is dedicated to providing high-quality, beginner-friendly tutorials that empower students to become experts in their chosen fields. We specialize in OnShape CAD design, STEM education including premed topics, and foundational computer science concepts.</p>
+                
+                <p>Our channel was created with the vision of giving back the knowledge and expertise we've gained throughout our years of learning and professional experience. We believe that education should be accessible, engaging, and practical.</p>
+            </div>
+
+            <div class="content-section">
+                <h2>What We Offer</h2>
+                <p><strong>OnShape CAD Mastery:</strong> Our comprehensive OnShape series takes you from complete beginner to advanced user. Learn 3D modeling, assembly design, technical drawings, and real-world engineering applications through step-by-step tutorials.</p>
+                
+                <p><strong>STEM & Premed Education:</strong> Explore complex topics in anatomy, disease pathology, and biological systems through clear, visual explanations designed to help premed students and STEM enthusiasts understand challenging concepts.</p>
+                
+                <p><strong>Computer Science Foundations:</strong> Build your programming skills with beginner-friendly lessons covering algorithms, data structures, problem-solving techniques, and fundamental CS concepts that form the backbone of modern technology.</p>
+            </div>
+
+            <div class="content-section">
+                <h2>Our Teaching Philosophy</h2>
+                <p>We believe in learning by doing. Every tutorial is designed to be hands-on, practical, and immediately applicable. Our step-by-step approach ensures that complex topics are broken down into manageable, understandable segments that build upon each other.</p>
+                
+                <p>Whether you're a student looking to supplement your coursework, a professional seeking to expand your skillset, or simply someone curious about these fascinating subjects, our content is designed to meet you where you are and help you grow.</p>
+            </div>
+        </div>
+
+        <!-- OnShape Series Page -->
+        <div id="onshape" class="page">
+            <h1 class="section-title">OnShape Tutorial Series</h1>
+            <p style="text-align: center; font-size: 1.2rem; color: #666; margin-bottom: 3rem;">Master 3D CAD design with our comprehensive OnShape tutorial series</p>
+            
+            <div class="video-grid">
+                <div class="video-card">
+                    <div class="video-thumbnail">▶️</div>
+                    <div class="video-info">
+                        <h3>Onshape Sketching Basics – Planes, Sketch Tool, Dimensions & Constraints</h3>
+                        <p>Master the fundamentals of OnShape sketching including working with planes, using sketch tools effectively, and applying dimensions and constraints for precise 2D drawings.</p>
+                        <a href="https://www.youtube.com/watch?v=xhWsi02gUBs" target="_blank" class="video-link">Watch on YouTube →</a>
+                    </div>
+                </div>
+                
+                <div class="video-card">
+                    <div class="video-thumbnail">▶️</div>
+                    <div class="video-info">
+                        <h3>Onshape Extrude Tool Explained in 2 Minutes – Beginner Tutorial</h3>
+                        <p>Quick and comprehensive guide to the extrude tool in OnShape. Learn how to transform 2D sketches into 3D parts using various extrude options and techniques.</p>
+                        <a href="https://www.youtube.com/watch?v=o4DdFPhFdrs" target="_blank" class="video-link">Watch on YouTube →</a>
+                    </div>
+                </div>
+                
+                <div class="video-card">
+                    <div class="video-thumbnail">▶️</div>
+                    <div class="video-info">
+                        <h3>Onshape Revolve Tool Explained in 2 Minutes – Beginner CAD Tutorial</h3>
+                        <p>Master the revolve tool to create cylindrical and rotational parts in OnShape. Perfect for creating shafts, bottles, vases, and other rotationally symmetric objects.</p>
+                        <a href="https://www.youtube.com/watch?v=P2polTpLf84" target="_blank" class="video-link">Watch on YouTube →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- All Tutorials Page -->
+        <div id="tutorials" class="page">
+            <h1 class="section-title">All Tutorial Categories</h1>
+            
+            <div class="content-section">
+                <h2>🔧 OnShape CAD Design</h2>
+                <div class="video-grid">
+                    <div class="video-card">
+                        <div class="video-thumbnail">▶️</div>
+                        <div class="video-info">
+                            <h3>Onshape Sketching Basics – Planes, Sketch Tool, Dimensions & Constraints</h3>
+                            <p>Master the fundamentals of OnShape sketching including working with planes, using sketch tools effectively, and applying dimensions and constraints.</p>
+                            <a href="https://www.youtube.com/watch?v=xhWsi02gUBs" target="_blank" class="video-link">Watch on YouTube →</a>
+                        </div>
+                    </div>
+                    <div class="video-card">
+                        <div class="video-thumbnail">▶️</div>
+                        <div class="video-info">
+                            <h3>Onshape Extrude Tool Explained in 2 Minutes – Beginner Tutorial</h3>
+                            <p>Quick guide to the extrude tool in OnShape. Learn how to transform 2D sketches into 3D parts using various extrude techniques.</p>
+                            <a href="https://www.youtube.com/watch?v=o4DdFPhFdrs" target="_blank" class="video-link">Watch on YouTube →</a>
+                        </div>
+                    </div>
+                    <div class="video-card">
+                        <div class="video-thumbnail">▶️</div>
+                        <div class="video-info">
+                            <h3>Onshape Revolve Tool Explained in 2 Minutes – Beginner CAD Tutorial</h3>
+                            <p>Master the revolve tool to create cylindrical and rotational parts in OnShape. Perfect for creating rotationally symmetric objects.</p>
+                            <a href="https://www.youtube.com/watch?v=P2polTpLf84" target="_blank" class="video-link">Watch on YouTube →</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h2>🧬 STEM & Premed Topics</h2>
+                <div class="video-grid">
+                    <div class="video-card">
+                        <div class="video-thumbnail">▶️</div>
+                        <div class="video-info">
+                            <h3>Human Anatomy Fundamentals</h3>
+                            <p>Essential anatomical structures and systems explained with visual aids and mnemonics.</p>
+                            <a href="#" class="video-link">Watch on YouTube →</a>
+                        </div>
+                    </div>
+                    <div class="video-card">
+                        <div class="video-thumbnail">▶️</div>
+                        <div class="video-info">
+                            <h3>Disease Pathology Basics</h3>
+                            <p>Understanding common diseases, their causes, progression, and treatment approaches.</p>
+                            <a href="#" class="video-link">Watch on YouTube →</a>
+                        </div>
+                    </div>
+                    <div class="video-card">
+                        <div class="video-thumbnail">▶️</div>
+                        <div class="video-info">
+                            <h3>Cellular Biology Essentials</h3>
+                            <p>Deep dive into cell structure, function, and biological processes at the molecular level.</p>
+                            <a href="#" class="video-link">Watch on YouTube →</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h2>💻 Computer Science</h2>
+                <div class="video-grid">
+                    <div class="video-card">
+                        <div class="video-thumbnail">▶️</div>
+                        <div class="video-info">
+                            <h3>Programming Fundamentals</h3>
+                            <p>Learn the basics of programming logic, variables, loops, and functions.</p>
+                            <a href="#" class="video-link">Watch on YouTube →</a>
+                        </div>
+                    </div>
+                    <div class="video-card">
+                        <div class="video-thumbnail">▶️</div>
+                        <div class="video-info">
+                            <h3>Data Structures Explained</h3>
+                            <p>Understanding arrays, linked lists, stacks, queues, and their real-world applications.</p>
+                            <a href="#" class="video-link">Watch on YouTube →</a>
+                        </div>
+                    </div>
+                    <div class="video-card">
+                        <div class="video-thumbnail">▶️</div>
+                        <div class="video-info">
+                            <h3>Algorithm Design Patterns</h3>
+                            <p>Common algorithmic approaches and problem-solving strategies in computer science.</p>
+                            <a href="#" class="video-link">Watch on YouTube →</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Page -->
+        <div id="contact" class="page">
+            <h1 class="section-title">Get In Touch</h1>
+            
+            <div style="text-align: center; margin: 3rem 0;">
+                <p style="font-size: 1.2rem; color: #666; margin-bottom: 2rem;">Have questions or suggestions? We'd love to hear from you!</p>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin: 3rem 0;">
+                    <div class="feature-card">
+                        <div class="feature-icon">📺</div>
+                        <h3>YouTube Channel</h3>
+                        <p>Subscribe for regular updates and new tutorials</p>
+                        <a href="#" class="video-link">Visit Channel →</a>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">💬</div>
+                        <h3>Comments & Q&A</h3>
+                        <p>Join the discussion in our video comments</p>
+                        <a href="#" class="video-link">Join Discussion →</a>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📚</div>
+                        <h3>Tutorial Requests</h3>
+                        <p>Suggest topics you'd like us to cover</p>
+                        <a href="#" class="video-link">Request Tutorial →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Navigation functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const pages = document.querySelectorAll('.page');
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Remove active class from all links and pages
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    pages.forEach(p => p.classList.remove('active'));
+                    
+                    // Add active class to clicked link
+                    this.classList.add('active');
+                    
+                    // Show corresponding page
+                    const pageId = this.getAttribute('href').substring(1);
+                    document.getElementById(pageId).classList.add('active');
+                });
+            });
+
+            // Handle CTA button click
+            document.querySelector('.cta-button').addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Remove active class from all links and pages
+                navLinks.forEach(l => l.classList.remove('active'));
+                pages.forEach(p => p.classList.remove('active'));
+                
+                // Activate about page
+                document.querySelector('a[href="#about"]').classList.add('active');
+                document.getElementById('about').classList.add('active');
+            });
+
+            // Add hover effects to video cards
+            const videoCards = document.querySelectorAll('.video-card');
+            videoCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px) scale(1.02)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+
+            // Animate stats on page load
+            function animateStats() {
+                const statNumbers = document.querySelectorAll('.stat-number');
+                statNumbers.forEach(stat => {
+                    const target = parseInt(stat.textContent.replace(/\D/g, ''));
+                    let current = 0;
+                    const increment = target / 50;
+                    
+                    const timer = setInterval(() => {
+                        current += increment;
+                        if (current >= target) {
+                            current = target;
+                            clearInterval(timer);
+                        }
+                        
+                        if (stat.textContent.includes('+')) {
+                            stat.textContent = Math.floor(current) + '+';
+                        } else if (stat.textContent.includes('/')) {
+                            stat.textContent = Math.floor(current) + '/7';
+                        } else {
+                            stat.textContent = Math.floor(current);
+                        }
+                    }, 50);
+                });
+            }
+
+            // Trigger stats animation when home page is active
+            if (document.getElementById('home').classList.contains('active')) {
+                setTimeout(animateStats, 1000);
+            }
+        });
+
+        // Smooth scrolling effect for header
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('header');
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(255, 255, 255, 0.98)';
+                header.style.boxShadow = '0 12px 40px rgba(0, 0, 0, 0.15)';
+            } else {
+                header.style.background = 'rgba(255, 255, 255, 0.95)';
+                header.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.1)';
+            }
+        });
+    </script>
+</body>
+</html>
